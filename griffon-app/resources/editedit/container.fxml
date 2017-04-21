@@ -8,6 +8,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="borderPane"
+            minWidth="800"
+            minHeight="600"
             fx:controller="editedit.ContainerController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
@@ -20,6 +22,12 @@
                         <MenuItem mnemonicParsing="false" text="Save" fx:id="saveActionTarget"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="false" text="Quit" fx:id="quitActionTarget"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Find" fx:id="find"/>
+                        <MenuItem mnemonicParsing="false" text="Replace" fx:id="replace"/>
                     </items>
                 </Menu>
             </menus>

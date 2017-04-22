@@ -44,4 +44,13 @@ public class EditorController extends AbstractGriffonController {
     public void closeFile() {
         destroyMVCGroup(getMvcGroup().getMvcId());
     }
+
+    public String getFileText() {
+        try {
+            return view.getEditor().getText();
+        } catch (Exception e) {
+            getLog().warn("Can't get file text", e);
+        }
+        return "";
+    }
 }

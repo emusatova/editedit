@@ -26,8 +26,9 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Find" fx:id="find"/>
-                        <MenuItem mnemonicParsing="false" text="Replace" fx:id="replace"/>
+                        <MenuItem mnemonicParsing="false" text="Find" fx:id="findActionTarget"/>
+                        <MenuItem mnemonicParsing="false" text="Find Next" fx:id="findNextActionTarget"/>
+                        <MenuItem mnemonicParsing="false" text="Replace" fx:id="replaceActionTarget"/>
                     </items>
                 </Menu>
             </menus>

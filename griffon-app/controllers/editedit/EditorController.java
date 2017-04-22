@@ -3,6 +3,8 @@ package editedit;
 import griffon.core.artifact.GriffonController;
 import griffon.inject.MVCMember;
 import griffon.metadata.ArtifactProviderFor;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 import org.codehaus.griffon.runtime.core.artifact.AbstractGriffonController;
 
 import javax.annotation.Nonnull;
@@ -18,6 +20,9 @@ public class EditorController extends AbstractGriffonController {
     private EditorModel model;
     @MVCMember @Nonnull
     private EditorView view;
+
+    @FXML
+    protected TextArea editor;
 
     @Override
     public void mvcGroupInit(@Nonnull Map<String, Object> args) {
@@ -52,5 +57,14 @@ public class EditorController extends AbstractGriffonController {
             getLog().warn("Can't get file text", e);
         }
         return "";
+    }
+
+    public void selectText(int from, int to) {
+        try {
+            editor.selectRange(from, to);
+        }
+        catch (Exception e) {
+            getLog().warn("Error selecting text", e);
+        }
     }
 }

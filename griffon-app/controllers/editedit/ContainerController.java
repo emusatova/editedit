@@ -38,6 +38,13 @@ public class ContainerController extends AbstractGriffonController {
         }
     }
 
+    public void autoSave() {
+        EditorController controller = resolveEditorController();
+        if (controller != null) {
+            controller.autoSaveFile();
+        }
+    }
+
     public void close() {
         EditorController controller = resolveEditorController();
         if (controller != null) {

@@ -19,6 +19,8 @@
                         <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="false" text="Save" fx:id="saveActionTarget"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Start Auto Save" fx:id="autoSaveActionTarget"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem mnemonicParsing="false" text="Quit" fx:id="quitActionTarget"/>
                     </items>
                 </Menu>

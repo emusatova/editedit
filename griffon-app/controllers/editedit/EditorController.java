@@ -8,7 +8,10 @@ import org.codehaus.griffon.runtime.core.artifact.AbstractGriffonController;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import static editedit.ConfigHolder.getProperty;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
@@ -39,6 +42,23 @@ public class EditorController extends AbstractGriffonController {
         } catch (IOException e) {
             getLog().warn("Can't save file", e);
         }
+    }
+
+    public void autoSaveFile() {
+        int msec = Integer.parseInt(ConfigHolder.getProperty("autoSave"))*60000;
+
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    writeStringToFile(model.getDocument().getFile(), view.getEditor().getText());
+                    runInsideUIAsync(() -> model.getDocument().setContents(view.getEditor().getText()));
+                } catch (IOException e) {
+                    getLog().warn("Can't save file", e);
+                }
+            }
+        }, 0, msec);
     }
 
     public void closeFile() {

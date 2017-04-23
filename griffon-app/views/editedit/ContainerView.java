@@ -100,6 +100,9 @@ public class ContainerView extends AbstractJavaFXGriffonView {
         Action saveAction = actionFor(controller, "save");
         model.getDocumentModel().addPropertyChangeListener("dirty", (e) -> saveAction.setEnabled((Boolean) e.getNewValue()));
 
+        Action autoSaveAction = actionFor(controller, "autoSave");
+        model.getDocumentModel().addPropertyChangeListener("dirty", (e) -> autoSaveAction.setEnabled((Boolean) e.getNewValue()));
+
         return scene;
     }
 

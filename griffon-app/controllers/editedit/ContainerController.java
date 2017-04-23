@@ -93,7 +93,9 @@ public class ContainerController extends AbstractGriffonController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/editedit/findreplace.fxml"));
             Parent root = (Parent) fxmlLoader.load();
+            Stage parent = (Stage) getApplication().getWindowManager().findWindow("mainWindow");
             Stage stage = new Stage();
+            stage.initOwner(parent);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("Find & Replace");

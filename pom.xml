@@ -33,6 +33,12 @@
     <dependencies>
         <!-- compile -->
         <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>0.6.10</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.griffon</groupId>
             <artifactId>griffon-core-compile</artifactId>
         </dependency>

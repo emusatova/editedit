@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -30,8 +31,10 @@ public class ContainerController extends AbstractGriffonController {
     @MVCMember @Nonnull
     private ContainerView view;
 
-    public static String searchText = null;
-    private static Boolean isSearchOpen = false;
+    @FXML
+    private TextField findTextField;
+
+    private static String textToFind = null;
 
     @Threading(Threading.Policy.SKIP)
     public void open() {
@@ -39,8 +42,8 @@ public class ContainerController extends AbstractGriffonController {
         if (file != null) {
             String mvcIdentifier = file.getName() + "-" + System.currentTimeMillis();
             createMVC("editedit", mvcIdentifier, CollectionUtils.<String, Object>map()
-                    .e("document", new Document(file, file.getName()))
-                    .e("tabName", file.getName()));
+                .e("document", new Document(file, file.getName()))
+                .e("tabName", file.getName()));
         }
     }
 
@@ -63,62 +66,87 @@ public class ContainerController extends AbstractGriffonController {
     }
 
     public void find() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                openFindWindow();
-            }
-        });
-    }
-
-    public void openFindWindow() {
         EditorController controller = resolveEditorController();
-
-        searchText = controller.getFileText();
-
-        if (searchText == null || searchText.isEmpty()) {
+        if (controller == null) {
             return;
         }
 
-        if (isSearchOpen) {
-            return;
-        } else {
-            isSearchOpen = true;
-        }
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/editedit/findreplace.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.DECORATED);
-            stage.setTitle("ABC");
-            stage.setScene(new Scene(root));
-            stage.show();
-            stage.setOnCloseRequest(event -> {
-                isSearchOpen = false;
-            });
-        }
-        catch (IOException e) {
-            getLog().warn("Can't get file text", e);
-        }
-    }
-
-    @FXML
-    protected void handleFindButton(ActionEvent event) {
-        findNext();
-    }
-
-    public void findNext() {
-        System.out.println("This is find next");
+//        Platform.runLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                openFindWindow();
+//            }
+//        });
+        runInsideUIAsync(() -> openFindWindow());
     }
 
     @Nullable
     private EditorController resolveEditorController() {
         if (!isBlank(model.getMvcIdentifier())) {
             return getApplication().getMvcGroupManager()
-                    .findController(model.getMvcIdentifier(), EditorController.class);
+                .findController(model.getMvcIdentifier(), EditorController.class);
         }
         return null;
+    }
+
+    public void openFindWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/editedit/findreplace.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("Find & Replace");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            getLog().warn("Can't Find & Replace", e);
+        }
+    }
+
+    @FXML
+    protected void handleFindButton(ActionEvent event) {
+        textToFind = findTextField.getText();
+        findNext();
+    }
+
+    @FXML
+    protected void handleReplaceButton(ActionEvent event) {
+        textToFind = findTextField.getText();
+        replaceAll();
+    }
+
+    private void replaceAll() {
+        System.out.println("This is replace all");
+    }
+
+    public void findNext() {
+        if (textToFind == null || textToFind.isEmpty()) {
+            return;
+        }
+
+        EditorController controller = resolveEditorController();
+        if (controller == null) {
+            return;
+        }
+
+        String fileText = controller.getFileText();
+        if (fileText == null || fileText.isEmpty()) {
+            return;
+        }
+
+        try {
+            int searchPosition = controller.getCursorPosition();
+            int foundPosition = fileText.indexOf(textToFind, searchPosition);
+            // if not found from current position, try to find from the beginning
+            if (foundPosition == -1 && searchPosition != 0) {
+                foundPosition = fileText.indexOf(textToFind, 0);
+            }
+            if (foundPosition != -1) {
+                controller.selectText(foundPosition, foundPosition + textToFind.length());
+            }
+        } catch (Exception e) {
+            getLog().warn("Error performing Find Next", e);
+        }
     }
 }

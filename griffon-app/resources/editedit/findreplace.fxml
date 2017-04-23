@@ -7,23 +7,41 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="171.0" prefWidth="298.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="editedit.ContainerController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="143.0"
+         prefWidth="298.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="editedit.ContainerController">
     <tabs>
         <Tab text="Find">
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="105.0" prefWidth="600.0">
-               <children>
-                  <Button layoutX="179.0" layoutY="103.0" mnemonicParsing="false" text="Find" onAction="#handleFindButton"/>
-                  <Button layoutX="232.0" layoutY="103.0" mnemonicParsing="false" text="Cancel" />
-                  <TextField layoutX="62.0" layoutY="14.0" prefHeight="25.0" prefWidth="222.0" />
-                  <Label layoutX="14.0" layoutY="18.0" text="Find" />
-               </children></AnchorPane>
+                    <children>
+                        <Button layoutX="138.0" layoutY="78.0" mnemonicParsing="false" onAction="#handleFindButton"
+                                prefWidth="70.0" text="Find"/>
+                        <Button layoutX="214.0" layoutY="78.0" mnemonicParsing="false" prefWidth="70.0" text="Cancel"/>
+                        <TextField id="findTextField" fx:id="findTextField" layoutX="62.0" layoutY="10.0"
+                                   prefHeight="25.0" prefWidth="222.0"/>
+                        <Label layoutX="14.0" layoutY="14.0" text="Find"/>
+                    </children>
+                </AnchorPane>
 
             </content>
         </Tab>
         <Tab text="Replace">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="298.0">
+                    <children>
+                        <Button layoutX="138.0" layoutY="78.0" mnemonicParsing="false" onAction="#handleReplaceButton"
+                                prefWidth="70.0" text="Replace"/>
+                        <Button layoutX="214.0" layoutY="78.0" mnemonicParsing="false" prefHeight="25.0"
+                                prefWidth="70.0" text="Cancel"/>
+                        <TextField id="findTextField" fx:id="findTextField1" layoutX="62.0" layoutY="10.0"
+                                   prefHeight="25.0" prefWidth="222.0"/>
+                        <Label layoutX="14.0" layoutY="14.0" text="Find"/>
+                        <Label layoutX="14.0" layoutY="46.0" text="Replace"/>
+                        <TextField id="findTextField" fx:id="findTextField11" layoutX="62.0" layoutY="42.0"
+                                   prefHeight="25.0" prefWidth="222.0"/>
+                    </children>
+                </AnchorPane>
             </content>
         </Tab>
     </tabs>

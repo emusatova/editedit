@@ -94,7 +94,7 @@ public class ContainerView extends AbstractJavaFXGriffonView {
             model.setMvcIdentifier(newTab != null ? newTab.getId() : null);
         });
 
-        tabGroup.prefHeightProperty().bind(borderPane.heightProperty());
+        tabGroup.prefHeightProperty().bind(scene.heightProperty());
         tabGroup.prefWidthProperty().bind(borderPane.widthProperty());
 
         Action saveAction = actionFor(controller, "save");

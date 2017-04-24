@@ -119,6 +119,7 @@ public class ContainerController extends AbstractGriffonController {
             Stage parent = (Stage) getApplication().getWindowManager().findWindow("mainWindow");
             findAndReplace = new Stage();
             findAndReplace.initOwner(parent);
+            findAndReplace.setResizable(false);
             findAndReplace.initStyle(StageStyle.DECORATED);
             findAndReplace.setTitle("Find & Replace");
             findAndReplace.setScene(new Scene(root));

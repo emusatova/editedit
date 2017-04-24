@@ -3,32 +3,19 @@ package editedit;
 import griffon.core.artifact.GriffonController;
 import griffon.inject.MVCMember;
 import griffon.metadata.ArtifactProviderFor;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.codehaus.griffon.runtime.core.artifact.AbstractGriffonController;
+
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import static editedit.ConfigHolder.getProperty;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 @ArtifactProviderFor(GriffonController.class)
 public class EditorController extends AbstractGriffonController {
-    public TextArea editor;
+
     @MVCMember
     @Nonnull
     private EditorModel model;
@@ -38,6 +25,7 @@ public class EditorController extends AbstractGriffonController {
 
     @Override
     public void mvcGroupInit(@Nonnull Map<String, Object> args) {
+
         model.setDocument((Document) args.get("document"));
         runOutsideUI(() -> {
             try {
@@ -49,6 +37,7 @@ public class EditorController extends AbstractGriffonController {
         });
     }
 
+
     public void saveFile() {
         try {
             writeStringToFile(model.getDocument().getFile(), view.getEditor().getText());
@@ -59,7 +48,7 @@ public class EditorController extends AbstractGriffonController {
     }
 
     public void autoSaveFile() {
-        int msec = Integer.parseInt(ConfigHolder.getProperty("autoSave"))*60000;
+        int msec = Integer.parseInt(ConfigHolder.getProperty("autoSave")) * 60000;
 
         Timer t = new Timer();
         t.schedule(new TimerTask() {
@@ -113,4 +102,6 @@ public class EditorController extends AbstractGriffonController {
             getLog().warn("Replace problem", e);
         }
     }
+
+
 }

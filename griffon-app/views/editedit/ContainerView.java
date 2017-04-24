@@ -66,7 +66,7 @@ public class ContainerView extends AbstractJavaFXGriffonView {
     private Scene init() {
         Scene scene = new Scene(new Group());
         scene.setFill(Color.WHITE);
-
+        scene.getStylesheets().add(getClass().getResource("/editedit/java-keywords.css").toExternalForm());
         Node node = loadFromFXML();
         ((Group) scene.getRoot()).getChildren().addAll(node);
         connectActions(node, controller);

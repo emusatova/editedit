@@ -74,7 +74,7 @@ public class ContainerView extends AbstractJavaFXGriffonView {
         getApplication().getWindowManager().attach("mainWindow", stage);
 
         fileChooser = new FileChooser();
-        fileChooser.setTitle(getApplication().getConfiguration().getAsString("application.title", "Open File"));
+
     }
 
     // build the UI
@@ -105,6 +105,8 @@ public class ContainerView extends AbstractJavaFXGriffonView {
 
     @Nullable
     public File selectFile() {
+        fileChooser.setInitialFileName("");
+        fileChooser.setTitle(getApplication().getConfiguration().getAsString("application.title", "Open File"));
         Window window = (Window) getApplication().getWindowManager().getStartingWindow();
         return fileChooser.showOpenDialog(window);
     }

@@ -84,4 +84,13 @@ public class EditorController extends AbstractGriffonController {
             getLog().warn("Error selecting text", e);
         }
     }
+
+    public void replaceSelectedText(String to) {
+        try {
+            if (view.getEditor().getSelection().getLength() != 0)
+                view.getEditor().replaceText(view.getEditor().getSelection(), to);
+        } catch (Exception e) {
+            getLog().warn("Replace problem", e);
+        }
+    }
 }

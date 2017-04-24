@@ -1,18 +1,19 @@
 package editedit;
 
+import griffon.core.GriffonApplication;
 import griffon.core.artifact.GriffonController;
 import griffon.inject.MVCMember;
 import griffon.metadata.ArtifactProviderFor;
 import griffon.transform.Threading;
 import griffon.util.CollectionUtils;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.codehaus.griffon.runtime.core.artifact.AbstractGriffonController;
@@ -26,15 +27,38 @@ import static griffon.util.GriffonNameUtils.isBlank;
 
 @ArtifactProviderFor(GriffonController.class)
 public class ContainerController extends AbstractGriffonController {
-    @MVCMember @Nonnull
-    private ContainerModel model;
-    @MVCMember @Nonnull
-    private ContainerView view;
+    @MVCMember
+    @Nonnull
+    private static ContainerModel model;
+    @MVCMember
+    @Nonnull
+    private static ContainerView view;
+
+    private static Stage findAndReplace;
+
+    private static int newFileNum = 1;
+
+    @FXML
+    private TextField replaceTextField;
 
     @FXML
     private TextField findTextField;
 
+    private static GriffonApplication griffonApplication;
+
     private static String textToFind = null;
+
+    private static String textToReplace = null;
+
+    @Threading(Threading.Policy.SKIP)
+    public void create() {
+        File file = new File("new" + newFileNum++);
+        String mvcIdentifier = file.getName() + "-" + System.currentTimeMillis();
+        createMVC("editedit", mvcIdentifier, CollectionUtils.<String, Object>map()
+                .e("document", new Document(file, file.getName()))
+                .e("tabName", file.getName()));
+
+    }
 
     @Threading(Threading.Policy.SKIP)
     public void open() {
@@ -42,8 +66,8 @@ public class ContainerController extends AbstractGriffonController {
         if (file != null) {
             String mvcIdentifier = file.getName() + "-" + System.currentTimeMillis();
             createMVC("editedit", mvcIdentifier, CollectionUtils.<String, Object>map()
-                .e("document", new Document(file, file.getName()))
-                .e("tabName", file.getName()));
+                    .e("document", new Document(file, file.getName()))
+                    .e("tabName", file.getName()));
         }
     }
 
@@ -66,25 +90,24 @@ public class ContainerController extends AbstractGriffonController {
     }
 
     public void find() {
-        EditorController controller = resolveEditorController();
-        if (controller == null) {
-            return;
-        }
 
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                openFindWindow();
-//            }
-//        });
-        runInsideUIAsync(() -> openFindWindow());
+        griffonApplication = getApplication();
+        runInsideUIAsync(this::openFindWindow);
+    }
+
+    public void replace(){
+        find();
     }
 
     @Nullable
     private EditorController resolveEditorController() {
         if (!isBlank(model.getMvcIdentifier())) {
-            return getApplication().getMvcGroupManager()
-                .findController(model.getMvcIdentifier(), EditorController.class);
+            if (griffonApplication != null)
+                return griffonApplication.getMvcGroupManager()
+                        .findController(model.getMvcIdentifier(), EditorController.class);
+            else
+                return getApplication().getMvcGroupManager()
+                        .findController(model.getMvcIdentifier(), EditorController.class);
         }
         return null;
     }
@@ -94,13 +117,12 @@ public class ContainerController extends AbstractGriffonController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/editedit/findreplace.fxml"));
             Parent root = (Parent) fxmlLoader.load();
             Stage parent = (Stage) getApplication().getWindowManager().findWindow("mainWindow");
-            Stage stage = new Stage();
-            stage.initOwner(parent);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.DECORATED);
-            stage.setTitle("Find & Replace");
-            stage.setScene(new Scene(root));
-            stage.show();
+            findAndReplace = new Stage();
+            findAndReplace.initOwner(parent);
+            findAndReplace.initStyle(StageStyle.DECORATED);
+            findAndReplace.setTitle("Find & Replace");
+            findAndReplace.setScene(new Scene(root));
+            findAndReplace.show();
         } catch (IOException e) {
             getLog().warn("Can't Find & Replace", e);
         }
@@ -110,16 +132,28 @@ public class ContainerController extends AbstractGriffonController {
     protected void handleFindButton(ActionEvent event) {
         textToFind = findTextField.getText();
         findNext();
+
     }
 
     @FXML
     protected void handleReplaceButton(ActionEvent event) {
         textToFind = findTextField.getText();
-        replaceAll();
+        textToReplace = replaceTextField.getText();
+        replaceText();
     }
 
-    private void replaceAll() {
-        System.out.println("This is replace all");
+    private void replaceText() {
+        EditorController controller = resolveEditorController();
+        if (controller == null) {
+            return;
+        }
+        if (textToFind == null || textToFind.isEmpty() || textToReplace == null || textToReplace.isEmpty()) {
+            return;
+        }
+
+        findNext();
+        controller.replaceSelectedText(textToReplace);
+
     }
 
     public void findNext() {
@@ -150,5 +184,23 @@ public class ContainerController extends AbstractGriffonController {
         } catch (Exception e) {
             getLog().warn("Error performing Find Next", e);
         }
+    }
+
+    public void handleEnterClick(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            TextField tf = (TextField) keyEvent.getSource();
+            if (tf.getId().equals("findTextField")) {
+                textToFind = findTextField.getText();
+                findNext();
+            } else {
+                textToFind = findTextField.getText();
+                textToReplace = replaceTextField.getText();
+                replaceText();
+            }
+        }
+    }
+
+    public void handleCancelButton(ActionEvent actionEvent) {
+        findAndReplace.close();
     }
 }

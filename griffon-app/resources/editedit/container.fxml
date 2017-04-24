@@ -16,6 +16,7 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
+                        <MenuItem mnemonicParsing="false" text="Create" fx:id="createActionTarget"/>
                         <MenuItem mnemonicParsing="false" text="Open" fx:id="openActionTarget"/>
                         <MenuItem mnemonicParsing="false" text="Close" fx:id="closeActionTarget"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
@@ -27,7 +28,6 @@
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Find" fx:id="findActionTarget"/>
-                        <MenuItem mnemonicParsing="false" text="Find Next" fx:id="findNextActionTarget"/>
                         <MenuItem mnemonicParsing="false" text="Replace" fx:id="replaceActionTarget"/>
                     </items>
                 </Menu>
@@ -35,6 +35,6 @@
         </MenuBar>
     </top>
     <center>
-        <TabPane fx:id="tabGroup" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER"/>
+        <TabPane fx:id="tabGroup" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER"/>
     </center>
 </BorderPane>
